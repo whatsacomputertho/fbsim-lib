@@ -1,6 +1,6 @@
-use crate::clock::GameClock;
-use crate::score::GameScore;
-use crate::possession::GamePossession;
+use crate::game::clock::GameClock;
+use crate::game::score::GameScore;
+use crate::game::possession::GamePossession;
 
 /// # GameLog struct
 ///

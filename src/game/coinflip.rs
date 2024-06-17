@@ -1,4 +1,4 @@
-use crate::team::Team;
+use crate::team::team::Team;
 
 use rand::Rng;
 use rand::distributions::{Distribution, Bernoulli};

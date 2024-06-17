@@ -1,9 +1,10 @@
-use crate::team::Team;
-use crate::score::GameScore;
-use crate::clock::GameClock;
-use crate::log::GameLog;
-use crate::possession::GamePossession;
-use crate::coinflip::{CoinFlip, CoinFlipDecision};
+use crate::team::team::Team;
+use crate::game::score::GameScore;
+use crate::game::clock::GameClock;
+use crate::game::log::GameLog;
+use crate::game::possession::GamePossession;
+use crate::game::coinflip::{CoinFlip, CoinFlipDecision};
+use crate::game::play::Play;
 
 use std::fmt;
 use rand::Rng;
@@ -18,7 +19,8 @@ pub struct Game {
     pub clock: GameClock,
     pub possession: GamePossession,
     pub log: GameLog,
-    coin_flip: CoinFlip
+    pub coin_flip: CoinFlip,
+    pub plays: Vec<Play>
 }
 
 impl Game {
@@ -32,7 +34,8 @@ impl Game {
             clock: GameClock::new(),
             possession: GamePossession::new(),
             log: GameLog::new(),
-            coin_flip: CoinFlip::new()
+            coin_flip: CoinFlip::new(),
+            plays: Vec::new()
         }
     }
 
