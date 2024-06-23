@@ -1,4 +1,5 @@
 use crate::team::player::Player;
+use crate::team::players::Players;
 
 pub struct Offense {
     quarterbacks: Vec<Player>,
@@ -21,9 +22,11 @@ impl Offense {
             offensive_line: Vec::new()
         }
     }
+}
 
+impl Players for Offense {
     /// Get the total number of players of the defensive unit
-    pub fn get_num_players(&self) -> usize {
+    fn get_num_players(&self) -> usize {
         self.quarterbacks.len() +
         self.runningbacks.len() +
         self.fullbacks.len() +
@@ -33,26 +36,26 @@ impl Offense {
     }
 
     /// Get the overall of the defensive unit
-    pub fn get_overall(&self) -> f64 {
-        let mut overall: f64 = 0.0_f64;
+    fn get_overall(&self) -> f64 {
+        let mut sum_overall: f64 = 0.0_f64;
         for player in self.quarterbacks.iter() {
-            overall += player.get_overall();
+            sum_overall += player.get_overall();
         }
         for player in self.runningbacks.iter() {
-            overall += player.get_overall();
+            sum_overall += player.get_overall();
         }
         for player in self.fullbacks.iter() {
-            overall += player.get_overall();
+            sum_overall += player.get_overall();
         }
         for player in self.wide_receivers.iter() {
-            overall += player.get_overall();
+            sum_overall += player.get_overall();
         }
         for player in self.tight_ends.iter() {
-            overall += player.get_overall();
+            sum_overall += player.get_overall();
         }
         for player in self.offensive_line.iter() {
-            overall += player.get_overall();
+            sum_overall += player.get_overall();
         }
-        overall / (self.get_num_players() as f64)
+        sum_overall / (self.get_num_players() as f64)
     }
 }

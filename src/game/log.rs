@@ -1,6 +1,4 @@
-use crate::game::clock::GameClock;
-use crate::game::score::GameScore;
-use crate::game::possession::GamePossession;
+use crate::game::context::context::GameContext;
 
 /// # GameLog struct
 ///
@@ -19,9 +17,9 @@ impl GameLog {
     }
 
     /// Log to the GameLog
-    pub fn log(&mut self, time: &GameClock, score: &GameScore, possession: &GamePossession, message: &str) {
+    pub fn log(&mut self, context: &GameContext, message: &str) {
         // Construct the game log string
-        let log_string: String = format!("({}, {}, {}) {}", time, score, possession, String::from(message));
+        let log_string: String = format!("({}, {}, {}) {}", context.clock, context.score, context.possession, String::from(message));
         self.log.push(log_string);
     }
 }

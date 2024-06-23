@@ -1,4 +1,5 @@
-use crate::team::player::Player;
+use crate::team::coach::Coach;
+use crate::team::players::Players;
 use crate::team::units::offense::offense::Offense;
 use crate::team::units::defense::defense::Defense;
 use crate::team::units::specialteams::specialteams::SpecialTeams;
@@ -12,6 +13,7 @@ use rand::distributions::{Distribution, Bernoulli};
 ///
 /// A `Team` represents a team of football players
 pub struct Team {
+    pub coach: Coach,
     pub offense: Offense,
     pub defense: Defense,
     pub special_teams: SpecialTeams,
@@ -22,8 +24,9 @@ pub struct Team {
 impl Team {
     /// Initialize a new team given a Vec of Players and its
     /// name as a &str
-    pub fn new(name: &str, abbreviation: &str) -> Team {
+    pub fn new(name: &str, abbreviation: &str, coach: Coach) -> Team {
         Team {
+            coach: coach,
             offense: Offense::new(),
             defense: Defense::new(),
             special_teams: SpecialTeams::new(),

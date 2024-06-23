@@ -3,15 +3,16 @@ use std::fmt;
 /// # GameQuarter enum
 ///
 /// A `GameQuarter` represents a quarter of a football game
+#[derive(PartialEq)]
 pub enum GameQuarter {
-    PREGAME,
-    FIRST,
-    SECOND,
-    HALFTIME,
-    THIRD,
-    FOURTH,
-    OVERTIME,
-    POSTGAME
+    Pregame,
+    First,
+    Second,
+    Halftime,
+    Third,
+    Fourth,
+    Overtime,
+    Postgame
 }
 
 /// # GameClock struct
@@ -27,10 +28,15 @@ impl GameClock {
     /// Initialize a zeroed GameClock
     pub fn new() -> GameClock {
         GameClock {
-            quarter: GameQuarter::PREGAME,
+            quarter: GameQuarter::Pregame,
             game_clock_seconds: 900_usize,
             play_clock_seconds: 40_usize
         }
+    }
+
+    /// Return true if the game is over
+    pub fn is_game_over(&self) -> bool {
+        self.quarter == GameQuarter::Postgame
     }
 
     /// Format the game clock as a string
@@ -48,14 +54,14 @@ impl GameClock {
     /// Format the quarter as a string
     pub fn format_quarter(&self) -> String {
         let quarter_str = match self.quarter {
-            GameQuarter::PREGAME => "Pre",
-            GameQuarter::FIRST => "1st",
-            GameQuarter::SECOND => "2nd",
-            GameQuarter::HALFTIME => "Half",
-            GameQuarter::THIRD => "3rd",
-            GameQuarter::FOURTH => "4th",
-            GameQuarter::OVERTIME => "OT",
-            GameQuarter::POSTGAME => "End"
+            GameQuarter::Pregame => "Pre",
+            GameQuarter::First => "1st",
+            GameQuarter::Second => "2nd",
+            GameQuarter::Halftime => "Half",
+            GameQuarter::Third => "3rd",
+            GameQuarter::Fourth => "4th",
+            GameQuarter::Overtime => "OT",
+            GameQuarter::Postgame => "End"
         };
         String::from(quarter_str)
     }
