@@ -37,6 +37,35 @@ impl GamePossession {
         }
     }
 
+    /// Flip the possession
+    pub fn flip_possession(&mut self) {
+        self.possession_away = !self.possession_away;
+        self.direction_left = !self.direction_left;
+    }
+
+    /// Set the line of possession
+    pub fn set_line_of_possession(&mut self, yard_line: usize, own: bool) {
+        // Initialize a local mutable variable for the line of possession
+        let mut line_of_pos: isize = yard_line as isize;
+
+        // Ensure the yard line is valid
+        if line_of_pos > 50_isize {
+            line_of_pos = 50_isize;
+        }
+
+        // Negate the line of possession based on direction & side of field
+        if own {
+            if !self.direction_left {
+                line_of_pos = line_of_pos * -1_isize;
+            }
+        } else {
+            if self.direction_left {
+                line_of_pos = line_of_pos * -1_isize;
+            }
+        }
+        self.line_of_possession = line_of_pos;
+    }
+
     /// Reset the first down line based on the line of possession
     pub fn reset_first_down_line(&mut self) {
         // If the line of possession is +/- 10 from a goal line
