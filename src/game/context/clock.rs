@@ -1,4 +1,7 @@
 use std::fmt;
+use rand::Rng;
+use rand::distributions::Distribution;
+use statrs::distribution::Beta;
 
 /// # GameQuarter enum
 ///
@@ -34,9 +37,34 @@ impl GameClock {
         }
     }
 
+    /// Jump to the first quarter if in pregame
+    pub fn start_game(&mut self) {
+        if self.quarter == GameQuarter::Pregame {
+            self.quarter = GameQuarter::First;
+        }
+    }
+
     /// Return true if the game is over
     pub fn is_game_over(&self) -> bool {
         self.quarter == GameQuarter::Postgame
+    }
+
+    /// Increment the game clock randomly given an expected number of seconds
+    pub fn increment_game_clock(&mut self, expected_seconds: usize, mut rng: &mut impl Rng) {
+        // Initialize a variable tracking the expected seconds, max 50
+        let mean_seconds: usize = if expected_seconds > 30 { 30_usize } else { expected_seconds };
+
+        // Map to a beta distribution centered at that mean & generate a play time
+        let dst_play_time: Beta = Beta::new(mean_seconds as f64 / 30_usize as f64, 5.0_f64).unwrap();
+        let play_time_seconds: usize = (dst_play_time.sample(&mut rng) * 30_f64) as usize;
+        println!("Play time: {}", play_time_seconds);
+
+        // Subtract the play time from the game clock
+        if play_time_seconds > self.game_clock_seconds {
+            self.game_clock_seconds = 0;
+        } else {
+            self.game_clock_seconds = self.game_clock_seconds - play_time_seconds;
+        }
     }
 
     /// Format the game clock as a string
