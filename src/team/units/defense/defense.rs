@@ -1,6 +1,7 @@
 use crate::team::player::Player;
 use crate::team::players::Players;
 
+#[derive(PartialEq)]
 pub struct Defense {
     edge_rushers: Vec<Player>,
     defensive_tackles: Vec<Player>,

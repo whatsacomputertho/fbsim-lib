@@ -1,5 +1,12 @@
 use crate::team::player::Player;
 use crate::team::team::Team;
+use crate::team::playcall::{
+    PlayCaller,
+    OffensivePlayCallDisplay,
+    DefensivePlayCallDisplay,
+    PlayComp,
+    PlayDepth
+};
 use crate::game::context::possession::GameDown;
 use crate::game::context::context::GameContext;
 use crate::game::log::GameLog;
@@ -95,11 +102,6 @@ impl Game {
         }
     }
 
-    /// Simulate an offensive play
-    fn simulate_play(&mut self, mut rng: &mut impl Rng) -> Result<(), GameError> {
-        Ok(())
-    }
-
     /// Simulate a PAT
     fn simulate_pat(&mut self, mut rng: &mut impl Rng) -> Result<(), GameError> {
         Ok(())
@@ -116,7 +118,7 @@ impl Game {
         let kicker_name: &str = &kicker.name;
 
         // Generate the length of the kicker's kickoff
-        let dst_kick_length: Beta = Beta::new(kicker_kicking as f64 / 10_f64, 5.0_f64).unwrap();
+        let dst_kick_length: Beta = Beta::new(kicker_kicking as f64, 4.0_f64).unwrap();
         let kick_length_seed: f64 = dst_kick_length.sample(&mut rng);
         let kick_length: usize = ((kick_length_seed * 50_f64) + 30_f64) as usize;
         message += &format!("{} kicks {} yards", kicker_name, kick_length);
@@ -128,7 +130,7 @@ impl Game {
             // Adjust the game context accordingly
             self.context.possession.flip_possession();
             self.context.possession.set_line_of_possession(25, true);
-            self.context.clock.increment_game_clock(5, &mut rng);
+            self.context.possession.down = GameDown::First;
 
             // Log the play and return
             self.log(&message);
@@ -196,8 +198,8 @@ impl Game {
 
                 // Get the yards gained or lost while the defender penetrated the block
                 let running_diff: isize = returner_running as isize - blocker_running as isize;
-                let yards_gained_seed: f64 = (running_diff + 9_isize) as f64 / 18_f64;
-                let dst_yards_gained: Beta = Beta::new(yards_gained_seed, 5.0_f64).unwrap();
+                let yards_gained_seed: f64 = (running_diff + 9_isize) as f64;
+                let dst_yards_gained: Beta = Beta::new(yards_gained_seed, 6.0_f64).unwrap();
                 let yards_gained: isize = ((dst_yards_gained.sample(&mut rng) * 10_f64) - 2_f64) as isize;
                 total_yards_gained += yards_gained;
 
@@ -214,7 +216,7 @@ impl Game {
                 }
             } else {
                 // Get the yards gained while the returner ran freely
-                let dst_yards_gained: Beta = Beta::new(returner_running as f64 / 10_f64, 5.0_f64).unwrap();
+                let dst_yards_gained: Beta = Beta::new(returner_running as f64, 4.0_f64).unwrap();
                 let yards_gained: isize = (dst_yards_gained.sample(&mut rng) * 10_f64) as isize;
                 total_yards_gained += yards_gained;
             }
@@ -276,6 +278,114 @@ impl Game {
         self.log(&message);
         self.context.possession.increment(yards_gained);
         Ok(())
+    }
+
+    /// Generate the playcalls of the offensive and defensive teams
+    fn generate_playcalls(&mut self, mut rng: &mut impl Rng) -> (Box<dyn OffensivePlayCallDisplay>, Box<dyn DefensivePlayCallDisplay>) {
+        // Generate the playcall of the offensive team
+        let offensive_team = self.get_team_in_possession();
+        let offensive_team_is_home = *offensive_team == self.home_team;
+        let offensive_play = offensive_team.coach.generate_offensive_playcall(&self.context, offensive_team_is_home, &mut rng);
+
+        // Generate the playcall of the defensive team
+        let defensive_team = self.get_team_defending();
+        let defensive_team_is_home = *defensive_team == self.away_team;
+        let defensive_play = defensive_team.coach.generate_defensive_playcall(&self.context, defensive_team_is_home, &mut rng);
+
+        // Return the results
+        (offensive_play, defensive_play)
+    }
+
+    /// Simulate an inside run
+    fn simulate_inside_run(&mut self, offensive_play: Box<dyn OffensivePlayCallDisplay>, defensive_play: Box<dyn DefensivePlayCallDisplay>, mut rng: &mut impl Rng) -> Result<(), GameError> {
+        // Determine the likelihood the defensive line penetrates the offensive line
+        let play_comparator: PlayComp = PlayComp::new();
+        let pen_prob: f64 = play_comparator.compare_penetration(
+            &offensive_play,
+            &defensive_play,
+        );
+        println!("{}", format!("Penetration probability: {}", pen_prob));
+
+        Ok(())
+    }
+
+    /// Simulate an outside run
+    fn simulate_outside_run(&mut self, offensive_play: Box<dyn OffensivePlayCallDisplay>, defensive_play: Box<dyn DefensivePlayCallDisplay>, mut rng: &mut impl Rng) -> Result<(), GameError> {
+        // Determine the likelihood the defensive line penetrates the offensive line
+        let play_comparator: PlayComp = PlayComp::new();
+        let pen_prob: f64 = play_comparator.compare_penetration(
+            &offensive_play,
+            &defensive_play,
+        );
+        println!("{}", format!("Penetration probability: {}", pen_prob));
+
+        Ok(())
+    }
+
+    /// Simulate a short pass
+    fn simulate_short_pass(&mut self, offensive_play: Box<dyn OffensivePlayCallDisplay>, defensive_play: Box<dyn DefensivePlayCallDisplay>, mut rng: &mut impl Rng) -> Result<(), GameError> {
+        // Determine the likelihood the defensive line penetrates the offensive line
+        let play_comparator: PlayComp = PlayComp::new();
+        let pen_prob: f64 = play_comparator.compare_penetration(
+            &offensive_play,
+            &defensive_play,
+        );
+        println!("{}", format!("Penetration probability: {}", pen_prob));
+
+        Ok(())
+    }
+
+    /// Simulate a medium pass
+    fn simulate_medium_pass(&mut self, offensive_play: Box<dyn OffensivePlayCallDisplay>, defensive_play: Box<dyn DefensivePlayCallDisplay>, mut rng: &mut impl Rng) -> Result<(), GameError> {
+        // Determine the likelihood the defensive line penetrates the offensive line
+        let play_comparator: PlayComp = PlayComp::new();
+        let pen_prob: f64 = play_comparator.compare_penetration(
+            &offensive_play,
+            &defensive_play,
+        );
+        println!("{}", format!("Penetration probability: {}", pen_prob));
+
+        Ok(())
+    }
+
+    /// Simulate a long pass
+    fn simulate_long_pass(&mut self, offensive_play: Box<dyn OffensivePlayCallDisplay>, defensive_play: Box<dyn DefensivePlayCallDisplay>, mut rng: &mut impl Rng) -> Result<(), GameError> {
+        // Determine the likelihood the defensive line penetrates the offensive line
+        let play_comparator: PlayComp = PlayComp::new();
+        let pen_prob: f64 = play_comparator.compare_penetration(
+            &offensive_play,
+            &defensive_play,
+        );
+        println!("{}", format!("Penetration probability: {}", pen_prob));
+
+        Ok(())
+    }
+
+    /// Simulate a regular offense-defense play given playcalls
+    fn simulate_play_from_playcalls(&mut self, offensive_play: Box<dyn OffensivePlayCallDisplay>, defensive_play: Box<dyn DefensivePlayCallDisplay>, mut rng: &mut impl Rng) -> Result<(), GameError> {
+        // Simulate the play based on the offensive playcall
+        if offensive_play.is_run() {
+            if offensive_play.is_inside_run() {
+                return self.simulate_inside_run(offensive_play, defensive_play, &mut rng)
+            } else {
+                return self.simulate_outside_run(offensive_play, defensive_play, &mut rng)
+            }
+        } else {
+            return match offensive_play.get_pass_depth() {
+                PlayDepth::Short => self.simulate_short_pass(offensive_play, defensive_play, &mut rng),
+                PlayDepth::Medium => self.simulate_medium_pass(offensive_play, defensive_play, &mut rng),
+                PlayDepth::Long => self.simulate_long_pass(offensive_play, defensive_play, &mut rng)
+            }
+        }
+    }
+
+    /// Simulate a regular offense-defense play
+    fn simulate_play(&mut self, mut rng: &mut impl Rng) -> Result<(), GameError> {
+        // Generate the offensive and defensive playcalls
+        let (offensive_play, defensive_play) = self.generate_playcalls(&mut rng);
+
+        // Simulate the play based on the playcalls
+        self.simulate_play_from_playcalls(offensive_play, defensive_play, &mut rng)
     }
 
     /// Simulate the next play

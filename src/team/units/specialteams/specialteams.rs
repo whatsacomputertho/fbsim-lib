@@ -2,8 +2,8 @@ use crate::team::player::Player;
 use crate::team::players::Players;
 
 use rand::Rng;
-use rand::prelude::SliceRandom;
 
+#[derive(PartialEq)]
 pub struct SpecialTeams {
     pub kickers: Vec<Player>,
     pub kick_returners: Vec<Player>,

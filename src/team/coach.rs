@@ -1,10 +1,10 @@
 use crate::game::context::context::GameContext;
 use crate::team::playcall::{
-    OffensivePlayCall,
     OffensivePlay,
-    DefensivePlayCall,
     DefensivePlay,
-    PlayCaller
+    PlayCaller,
+    OffensivePlayCallDisplay,
+    DefensivePlayCallDisplay
 };
 
 use rand::Rng;
@@ -12,6 +12,7 @@ use rand::Rng;
 /// # OffensiveStyle enum
 ///
 /// An `OffensiveStyle` represents a coaching style for offense
+#[derive(PartialEq)]
 pub enum OffensiveStyle {
     Run,
     Balanced,
@@ -21,6 +22,7 @@ pub enum OffensiveStyle {
 /// # DefensiveStyle enum
 ///
 /// A `DefensiveStyle` represents a coaching style for defense
+#[derive(PartialEq)]
 pub enum DefensiveStyle {
     Coverage,
     Balanced,
@@ -30,6 +32,7 @@ pub enum DefensiveStyle {
 /// # Coach struct
 ///
 /// A `Coach` represents a football coach
+#[derive(PartialEq)]
 pub struct Coach {
     pub name: String,
     pub aggressiveness: usize,
@@ -55,7 +58,7 @@ impl Coach {
 
 impl PlayCaller for Coach {
     /// Expected to generate the playcaller's offensive play call
-    fn generate_offensive_playcall(&self, context: &GameContext, is_home: bool, mut rng: &mut impl Rng) -> Box<dyn OffensivePlayCall> {
+    fn generate_offensive_playcall(&self, context: &GameContext, is_home: bool, mut rng: &mut impl Rng) -> Box<dyn OffensivePlayCallDisplay> {
         /*Initialize probabilities for pass/run, inside/outside, pass depth*/
         let mut p_run: f64 = 0.5_f64;
         let mut p_run_sum_count: usize = 1_usize;
@@ -108,7 +111,7 @@ impl PlayCaller for Coach {
     }
 
     /// Expected to generate the playcaller's defensive play call
-    fn generate_defensive_playcall(&self, context: &GameContext, is_home: bool, mut rng: &mut impl Rng) -> Box<dyn DefensivePlayCall> {
+    fn generate_defensive_playcall(&self, context: &GameContext, is_home: bool, mut rng: &mut impl Rng) -> Box<dyn DefensivePlayCallDisplay> {
         /*Initialize probabilities for blitz/coverage, man/zone, zone depth, blitz aggressiveness*/
         let mut p_blitz: f64 = 0.5_f64;
         let mut p_blitz_sum_count: usize = 1_usize;

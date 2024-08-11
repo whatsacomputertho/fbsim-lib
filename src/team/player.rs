@@ -4,6 +4,7 @@ use std::fmt;
 ///
 /// A `Player` represents a football player
 #[derive(Clone)]
+#[derive(PartialEq)]
 pub struct Player {
     pub name: String,
     pub throwing: usize,
