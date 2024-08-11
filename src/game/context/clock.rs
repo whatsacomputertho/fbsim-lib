@@ -55,9 +55,8 @@ impl GameClock {
         let mean_seconds: usize = if expected_seconds > 30 { 30_usize } else { expected_seconds };
 
         // Map to a beta distribution centered at that mean & generate a play time
-        let dst_play_time: Beta = Beta::new(mean_seconds as f64 / 30_usize as f64, 5.0_f64).unwrap();
+        let dst_play_time: Beta = Beta::new(mean_seconds as f64, 10.0_f64).unwrap();
         let play_time_seconds: usize = (dst_play_time.sample(&mut rng) * 30_f64) as usize;
-        println!("Play time: {}", play_time_seconds);
 
         // Subtract the play time from the game clock
         if play_time_seconds > self.game_clock_seconds {

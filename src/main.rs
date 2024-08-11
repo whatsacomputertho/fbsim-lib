@@ -73,7 +73,7 @@ fn main() {
         5, // Running
         5, // Blocking
         5, // Tackling
-        7, // Kicking
+        1, // Kicking
     );
     let your_player: Player = Player::new(
         "Eric Eric",
@@ -119,6 +119,10 @@ fn main() {
     let mut rng = rand::thread_rng();
     let mut our_game: Game = Game::new(my_team, your_team);
     our_game.simulate_opening_coin_fip(&mut rng);
+    our_game.simulate_next_play(&mut rng);
+    our_game.simulate_next_play(&mut rng);
+    our_game.simulate_next_play(&mut rng);
+    our_game.simulate_next_play(&mut rng);
     our_game.simulate_next_play(&mut rng);
     for log in our_game.log.log {
         println!("{}", log);

@@ -12,6 +12,7 @@ use rand::distributions::{Distribution, Bernoulli};
 /// # Team struct
 ///
 /// A `Team` represents a team of football players
+#[derive(PartialEq)]
 pub struct Team {
     pub coach: Coach,
     pub offense: Offense,

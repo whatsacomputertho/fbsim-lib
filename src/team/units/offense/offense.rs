@@ -1,6 +1,7 @@
 use crate::team::player::Player;
 use crate::team::players::Players;
 
+#[derive(PartialEq)]
 pub struct Offense {
     quarterbacks: Vec<Player>,
     runningbacks: Vec<Player>,
